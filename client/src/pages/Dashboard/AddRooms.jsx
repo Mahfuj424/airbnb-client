@@ -3,6 +3,7 @@ import AddRoomForm from "../../components/Forms/AddRoomForm";
 import { imageUpload } from "../../api/utils";
 import { AuthContext } from "../../providers/AuthProvider";
 import { postRooms } from "../../api/rooms";
+import toast from "react-hot-toast";
 
 const AddRooms = () => {
   const { user } = useContext(AuthContext);
@@ -51,7 +52,20 @@ const AddRooms = () => {
           },
         };
         postRooms(roomData)
-          .then((data) => console.log(data))
+          .then((data) => {
+            console.log(data);
+            toast.success("Room successfully posted");
+            // Clear form data
+            form.location.value = "";
+            form.title.value = "";
+            form.price.value = "";
+            form.total_guest.value = "";
+            form.bedrooms.value = "";
+            form.bathrooms.value = "";
+            form.description.value = "";
+            form.category.value = "";
+            form.image.value = null;
+          })
           .catch((err) => console.log(err));
         setLoading(false);
       })
