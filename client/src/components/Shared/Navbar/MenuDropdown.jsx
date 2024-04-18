@@ -8,17 +8,18 @@ import { becomeHost } from "../../../api/user";
 import toast from "react-hot-toast";
 
 const MenuDropdown = () => {
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logOut, role, setRole } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
+  console.log(role);
 
   const modalHandler = (email) => {
-    becomeHost(email)
-    .then(data=>{
-      console.log(data)
-      toast.success('You are a host succesfully, post rooms')
-      setModal(false)
-    })
+    becomeHost(email).then((data) => {
+      console.log(data);
+      toast.success("You are a host succesfully, post rooms");
+      setRole('host')
+      setModal(false);
+    });
   };
 
   const closeModal = () => {
@@ -29,11 +30,16 @@ const MenuDropdown = () => {
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         {/* Aircnc btn */}
-        <div
-          onClick={() => setModal(true)}
-          className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
-        >
-          AirCNC your home
+        <div className="hidden md:block text-sm font-semibold hover:bg-neutral-100 cursor-pointer py-3 px-8 rounded-full transition">
+          {!role && (
+            <button
+              onClick={() => setModal(true)}
+              className="cursor-pointer hover:bg-neutral-100 py-3 px-4"
+              disabled={!user}
+            >
+              AirCNC your home
+            </button>
+          )}
         </div>
         {/* Dropdown btn */}
         <div

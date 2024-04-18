@@ -4,9 +4,11 @@ import { imageUpload } from "../../api/utils";
 import { AuthContext } from "../../providers/AuthProvider";
 import { postRooms } from "../../api/rooms";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AddRooms = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploadButtonText, setUploadButtonText] = useState("Upload Image");
   const [dates, setDates] = useState({
@@ -16,12 +18,13 @@ const AddRooms = () => {
   });
 
   const handleSubmit = (e) => {
+    setUploadButtonText("Uploading...");
     e.preventDefault();
     setLoading(true);
     const form = e.target;
     const location = form.location.value;
     const title = form.title.value;
-    const from = dates?.startDete;
+    const from = dates?.startDate;
     const to = dates?.endDate;
     const price = form.price.value;
     const total_guest = form.total_guest.value;
@@ -51,10 +54,12 @@ const AddRooms = () => {
             email: user?.email,
           },
         };
+        console.log(roomData);
         postRooms(roomData)
           .then((data) => {
-            console.log(data);
-            toast.success("Room successfully posted");
+            setUploadButtonText("Uploaded!");
+            toast.success("Room added");
+            navigate("/dashboard/my-listings");
             // Clear form data
             form.location.value = "";
             form.title.value = "";
