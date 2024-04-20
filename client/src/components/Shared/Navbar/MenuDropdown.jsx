@@ -2,7 +2,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "./Avatar";
 import { useCallback, useContext, useState } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HostModal from "../../Modal/HostRequestModal";
 import { becomeHost } from "../../../api/user";
 import toast from "react-hot-toast";
@@ -11,13 +11,14 @@ const MenuDropdown = () => {
   const { user, logOut, role, setRole } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  console.log(role);
+  const navigate = useNavigate();
 
   const modalHandler = (email) => {
     becomeHost(email).then((data) => {
       console.log(data);
       toast.success("You are a host succesfully, post rooms");
-      setRole('host')
+      setRole("host");
+      navigate("/dashboard/add-room");
       setModal(false);
     });
   };
@@ -30,11 +31,17 @@ const MenuDropdown = () => {
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         {/* Aircnc btn */}
-        <div className="hidden md:block text-sm font-semibold hover:bg-neutral-100 cursor-pointer py-3 px-8 rounded-full transition">
+        <div
+          className={`hidden md:block text-sm font-semibold ${
+            role === "host"
+              ? ""
+              : "hover:bg-neutral-100 cursor-pointer py-1 px-4 rounded-full transition"
+          }`}
+        >
           {!role && (
             <button
               onClick={() => setModal(true)}
-              className="cursor-pointer hover:bg-neutral-100 py-3 px-4"
+              className="cursor-pointer hover:bg-neutral-100"
               disabled={!user}
             >
               AirCNC your home
@@ -53,7 +60,7 @@ const MenuDropdown = () => {
         </div>
       </div>
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-[10vw] bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
             <Link
               to="/"
@@ -64,7 +71,7 @@ const MenuDropdown = () => {
             {user ? (
               <>
                 <Link
-                  to="/dashboard"
+                  to="/dashboard/my-bookings"
                   className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"
                 >
                   Dashboard

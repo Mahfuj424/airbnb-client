@@ -6,7 +6,7 @@ import { upadateStatus } from "../../api/booking";
 import toast from "react-hot-toast";
 import DeleteModal from "../../components/Modal/DeleteModal";
 
-const RoomDataRow = ({ room, fetchRooms }) => {
+const RoomDataRow = ({ room, refetch }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeModal = () => {
@@ -15,7 +15,7 @@ const RoomDataRow = ({ room, fetchRooms }) => {
 
   const modalHandler = (id) => {
     deleteRoom(id).then((data) => {
-      fetchRooms();
+      refetch()
       toast.success("delete room successfully");
     });
   };

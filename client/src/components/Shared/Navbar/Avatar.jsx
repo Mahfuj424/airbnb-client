@@ -7,6 +7,7 @@ const Avatar = () => {
   return (
     <img
       className='rounded-full'
+      referrerPolicy='no-referrer'
       src={user && user.photoURL ? user.photoURL : avatarImg}
       alt='profile'
       height='30'

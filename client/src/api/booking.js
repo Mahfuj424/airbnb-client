@@ -35,6 +35,15 @@ export const getBookings = async (email) => {
   return data;
 };
 
+
+export const getBookingsManage = async (email) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/bookings/host?email=${email}`
+  );
+  const data = await response.json();
+  return data;
+};
+
 // delete a booking
 
 export const deletebooking = async (id) => {

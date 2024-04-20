@@ -1,8 +1,12 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { format } from "date-fns";
 import { Fragment } from "react";
+import CheckoutForm from "../Forms/CheckOutForm";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+const stripePromise = loadStripe(`${import.meta.env.VITE_PAYMENT_GATEWAY_PK}`);
 
-const BookingModal = ({ modalHandler, closeModal, isOpen, bookingInfo }) => {
+const BookingModal = ({ closeModal, isOpen, bookingInfo }) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -57,28 +61,17 @@ const BookingModal = ({ modalHandler, closeModal, isOpen, bookingInfo }) => {
                     {format(new Date(bookingInfo?.to), "PP")}
                   </p>
                 </div>
+                <hr className="mt-8 " />
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
                     Price: $ {bookingInfo?.price}
                   </p>
+                  <Elements stripe={stripePromise}>
+                    <CheckoutForm bookingInfo={bookingInfo} closeModal={closeModal}/>
+                  </Elements>
                 </div>
-                <hr className="mt-8 " />
-                <div className="flex mt-2 justify-around">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                    onClick={modalHandler}
-                  >
-                    Pay {bookingInfo?.price}$
-                  </button>
-                </div>
+                
+                
               </Dialog.Panel>
             </Transition.Child>
           </div>

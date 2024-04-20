@@ -1,43 +1,24 @@
 import { useContext, useEffect, useState } from "react";
+import { getBookingsManage } from "../../../api/booking";
+import TableRow from "../TableRow";
 import { AuthContext } from "../../../providers/AuthProvider";
-import { getRooms } from "../../../api/rooms";
-import RoomDataRow from "../RoomDataRow";
 import EmptyState from "../../../components/Shared/EmptyState";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
-const MyListings = () => {
-  const { user, loading } = useContext(AuthContext);
-  const [axiosSecure] = useAxiosSecure();
-  // const [rooms, setRooms] = useState([]);
-  // console.log(rooms);
+const ManageBookings = () => {
+  const [bookings, setBookings] = useState([]);
+  const { user } = useContext(AuthContext);
+  const fetchBookings = () => {
+    getBookingsManage(user?.email).then((data) => {
+      setBookings(data);
+    });
+  };
 
-  // const fetchRooms = () => {
-  //   getRooms(user?.email).then((data) => {
-  //     setRooms(data);
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   fetchRooms();
-  // }, [user]);
-
-  const queryClient = useQueryClient();
-
-  const {data: rooms=[], refetch} = useQuery({
-    queryKey: ["rooms", user?.email],
-    enabled: !loading
-,    queryFn: async () => {
-      const res = await axiosSecure.get(`rooms/${user?.email}`);
-      console.log("axios secure data", res.data);
-      console.log(res.data);
-      return res.data
-    },
-  });
-
+  useEffect(() => {
+    fetchBookings();
+  }, [user]);
   return (
     <>
-      {rooms && Array.isArray(rooms) && rooms.length > 0 ? (
+      {bookings && Array.isArray(bookings) && bookings.length > 0 ? (
         <div className="container mx-auto px-4 sm:px-8">
           <div className="py-8">
             <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -79,23 +60,17 @@ const MyListings = () => {
                         scope="col"
                         className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal"
                       >
-                        Delete
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal"
-                      >
-                        Update
+                        Action
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {rooms &&
-                      rooms?.map((room) => (
-                        <RoomDataRow
-                          key={room._id}
-                          room={room}
-                          refetch={refetch}
+                    {bookings &&
+                      bookings?.map((booking) => (
+                        <TableRow
+                          key={booking._id}
+                          booking={booking}
+                          fetchBookings={fetchBookings}
                         />
                       ))}
                   </tbody>
@@ -106,13 +81,13 @@ const MyListings = () => {
         </div>
       ) : (
         <EmptyState
-          message={"No Room Data Available!"}
-          address={"/dashboard/add-room"}
-          label={"Add Room"}
+          message={"No Booking Data Available!"}
+          address={"/"}
+          label={"Go Back"}
         />
       )}
     </>
   );
 };
 
-export default MyListings;
+export default ManageBookings;

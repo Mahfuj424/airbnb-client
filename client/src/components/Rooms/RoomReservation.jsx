@@ -30,6 +30,8 @@ const RoomReservation = ({ roomData }) => {
     endDate: new Date(roomData?.to),
     key: "selection",
   });
+  
+  const isGuest = role !== "host";
 
   const handleSelect = (range) => {
     setValue(...value);
@@ -47,17 +49,17 @@ const RoomReservation = ({ roomData }) => {
     image: roomData.image
   });
 
-  const modalHandler = () => {
-    bookedRoom(bookingInfo).then((data) => {
-      upadateStatus(roomData._id, true)
-        .then((data) => {
-          closeModal();
-          toast.success("successfully booked room");
-          navigate('/dashboard/my-bookings')
-        })
-        .catch((err) => closeModal());
-    });
-  };
+  // const modalHandler = () => {
+  //   bookedRoom(bookingInfo).then((data) => {
+  //     upadateStatus(roomData._id, true)
+  //       .then((data) => {
+  //         closeModal();
+  //         toast.success("successfully booked room");
+  //         navigate('/dashboard/my-bookings')
+  //       })
+  //       .catch((err) => closeModal());
+  //   });
+  // };
 
   return (
     <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
@@ -68,7 +70,11 @@ const RoomReservation = ({ roomData }) => {
       </div>
       <hr />
       <div className="flex justify-center">
-        <Calender value={value} handleSelect={handleSelect} />
+      <Calender
+          value={value}
+          handleSelect={handleSelect}
+          disabled={!isGuest} // Disable calendar if user is not a guest
+        />
       </div>
 
       <hr />
@@ -88,7 +94,6 @@ const RoomReservation = ({ roomData }) => {
       </div>
       <BookingModal
         bookingInfo={bookingInfo}
-        modalHandler={modalHandler}
         closeModal={closeModal}
         isOpen={isOpen}
       />
