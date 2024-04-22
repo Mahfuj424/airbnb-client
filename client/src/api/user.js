@@ -7,6 +7,7 @@ export const saveUser = (user) => {
     method: "PUT",
     headers: {
       "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
     body: JSON.stringify(currentUser),
   })
@@ -25,6 +26,7 @@ export const becomeHost = (email) => {
     method: "PUT",
     headers: {
       "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
     body: JSON.stringify(currentUser),
   }).then((res) => res.json());
@@ -32,7 +34,14 @@ export const becomeHost = (email) => {
 
 // get user role
 export const getRole = async (email) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${email}`);
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/user/${email}`,
+    {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    }
+  );
   const data = await response.json();
   return data?.role;
 };

@@ -6,6 +6,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { upadateStatus } from "../../api/booking";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { ImSpinner9 } from "react-icons/im";
 
 const CheckoutForm = ({ bookingInfo, closeModal }) => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const CheckoutForm = ({ bookingInfo, closeModal }) => {
   const elements = useElements();
   const [error, setError] = useState("");
   const [clientSecret, setClientSecret] = useState("");
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     axiosSecure
@@ -56,6 +58,7 @@ const CheckoutForm = ({ bookingInfo, closeModal }) => {
       console.log("[PaymentMethod]", paymentMethod);
     }
     //   confirm request
+    setProcessing(true);
     const { paymentIntent, error: stripeConfirmError } =
       await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -86,9 +89,13 @@ const CheckoutForm = ({ bookingInfo, closeModal }) => {
                 const text = `Booking successful!, TransactionsId: ${paymentIntent.id}`;
                 toast.success(text);
                 navigate("/dashboard/my-bookings");
+                setProcessing(false);
                 closeModal();
               })
-              .catch((err) => console.log(err.message));
+              .catch((err) => {
+                setProcessing(false);
+                console.log(err.message);
+              });
           }
         });
       }
@@ -123,11 +130,15 @@ const CheckoutForm = ({ bookingInfo, closeModal }) => {
             Cancel
           </button>
           <button
-            disabled={!stripe}
+            disabled={!stripe || processing || !clientSecret}
             type="submit"
             className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
           >
-            Pay
+            {processing ? (
+              <ImSpinner9 className="m-auto animate-spin" size={24} />
+            ) : (
+              `Pay ${bookingInfo?.price}$`
+            )}
           </button>
         </div>
       </form>

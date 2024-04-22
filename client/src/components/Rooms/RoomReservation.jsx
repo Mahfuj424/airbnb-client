@@ -9,10 +9,9 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const RoomReservation = ({ roomData }) => {
-  const { user, role } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const closeModal = () => {
     setIsOpen(false);
@@ -30,11 +29,14 @@ const RoomReservation = ({ roomData }) => {
     endDate: new Date(roomData?.to),
     key: "selection",
   });
-  
-  const isGuest = role !== "host";
+
 
   const handleSelect = (range) => {
-    setValue(...value);
+    setValue({
+      ...value,
+      startDate: range.startDate,
+      endDate: range.endDate
+    });
   };
 
   const [bookingInfo, setBookingInfo] = useState({
@@ -46,7 +48,7 @@ const RoomReservation = ({ roomData }) => {
     from: roomData.from,
     to: roomData.to,
     roomId: roomData._id,
-    image: roomData.image
+    image: roomData.image,
   });
 
   // const modalHandler = () => {
@@ -70,11 +72,7 @@ const RoomReservation = ({ roomData }) => {
       </div>
       <hr />
       <div className="flex justify-center">
-      <Calender
-          value={value}
-          handleSelect={handleSelect}
-          disabled={!isGuest} // Disable calendar if user is not a guest
-        />
+        <Calender value={value} handleSelect={handleSelect} />
       </div>
 
       <hr />
@@ -83,7 +81,11 @@ const RoomReservation = ({ roomData }) => {
           onClick={() => {
             setIsOpen(true);
           }}
-          disabled={user.email === roomData.host.email || roomData.booked}
+          disabled={
+            user.email === roomData.host.email ||
+            roomData.booked ||
+            value.endDate < new Date()
+          }
           label="Reserve"
         />
       </div>
