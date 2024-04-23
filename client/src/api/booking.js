@@ -3,7 +3,6 @@ export const bookedRoom = async (booking) => {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
     body: JSON.stringify(booking),
   });
@@ -19,7 +18,6 @@ export const upadateStatus = async (id, status) => {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("access-token")}`,
       },
       body: JSON.stringify({ status }),
     }
@@ -31,12 +29,7 @@ export const upadateStatus = async (id, status) => {
 // get all bookings for guest
 export const getBookings = async (email) => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/bookings?email=${email}`,
-    {
-      headers: {
-        authorization: `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    }
+    `${import.meta.env.VITE_API_URL}/bookings?email=${email}`
   );
   const data = await response.json();
   return data;
@@ -64,7 +57,6 @@ export const deletebooking = async (id) => {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("access-token")}`,
       },
     }
   );

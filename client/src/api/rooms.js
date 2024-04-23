@@ -3,7 +3,6 @@ export const postRooms = async (rooms) => {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
     body: JSON.stringify(rooms),
   });
@@ -15,9 +14,6 @@ export const postRooms = async (rooms) => {
 export const allRooms = async () => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/rooms`, {
     method: "GET",
-    headers: {
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
-    },
   });
   const data = await response.json();
   return data;
@@ -26,12 +22,7 @@ export const allRooms = async () => {
 // get rooms for host
 export const getRooms = async (email) => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/rooms/${email}`,
-    {
-      headers: {
-        authorization: `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    }
+    `${import.meta.env.VITE_API_URL}/rooms/${email}`
   );
   const data = await response.json();
   return data;
@@ -43,7 +34,6 @@ export const updateRoom = async (roomData, id) => {
     method: "PUT",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
     body: JSON.stringify(roomData),
   });
@@ -53,11 +43,7 @@ export const updateRoom = async (roomData, id) => {
 
 // get single room
 export const getRoom = async (id) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/room/${id}`, {
-    headers: {
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
-    },
-  });
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/room/${id}`);
   const data = await response.json();
   return data;
 };
@@ -68,7 +54,6 @@ export const deleteRoom = async (id) => {
     method: "DELETE",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
   });
   const data = await response.json();
